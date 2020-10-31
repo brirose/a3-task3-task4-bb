@@ -1,0 +1,89 @@
+---
+title: "Assignment 3 Task 3"
+author: "Bri Baker"
+date: "October 30, 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+library(tidyverse)
+library(here)
+library(janitor)
+library(kableExtra)
+library(lubridate)
+```
+# Load Data and Clean
+
+```{r}
+urchins <- read_csv(here("data", "urchins.csv")) %>% # read in data
+  clean_names() %>% # lower snake case column names
+  rename(size_cm = size) # rename size colname to make more descriptive
+```
+
+
+# Section 1. Size comparisons, purple and red urchins
+
+## Exploratory data visualization
+
+```{r}
+ggplot(urchins, aes(size_cm)) + # plot urchins by size
+  geom_histogram() + # use a histogram
+  facet_wrap(~common_name) + # split by common name
+  labs(x = "Size(cm)", # lable x axis
+       y = "Individuals (count)", #label y axis
+       title = "Figure 1: Exploratory histogram of urchin size") # title
+```
+
+
+```{r}
+ggplot(urchins, aes(common_name, size_cm)) + #plot urchins by size and name
+  geom_boxplot() + # use box plot
+  labs(x = "", # no x lab
+       y = "Size (cm)", # label y axis
+       title = "Figure 2: Exploratory box plot of urchin size")# title
+
+```
+
+
+## Descriptive statistics table
+
+```{r}
+summary_urchins <- urchins %>% 
+  group_by(common_name) %>% 
+  summarize(mean_cm = mean(size_cm), 
+            median_cm = median(size_cm), 
+            sd_cm = sd(size_cm), 
+            count = n())
+
+kable(summary_urchins, "html") %>% 
+  kable_styling("striped")
+  
+```
+
+
+## Summary Explanation
+
+EXPLAIN SOME STUFF HERE THANKS
+
+
+# Section 2. Purple urchin counts by site and year
+
+
+```{r}
+purple_urchins <- urchins %>% 
+  filter(common_name == "Purple Urchin") %>% 
+  mutate(date = mdy(date),
+         year = year(date),
+         site_full = case_when(
+           site == "NAPL" ~ "Naples Reef", 
+           site == "AQUE" ~ "Arroyo Quemado Reef",
+           site == "CARP" ~ "Carpinteria Reef", 
+           site == "MOHK" ~ "Mohawk Reef", 
+           site == "IVEE" ~ "Isla Vista Reef"
+         )
+         )
+
+```
+
+
