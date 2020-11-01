@@ -13,6 +13,8 @@ library(janitor)
 library(kableExtra)
 library(lubridate)
 ```
+
+
 # Load Data and Clean
 
 ```{r}
@@ -64,7 +66,7 @@ kable(summary_urchins, "html") %>% #make a table
 
 ## Summary Explanation
 
-Figure 1 indicates that there is a fairly normal distribution in size of both species; however, the breaks in the distributions indicate that there may be more complexity at play. Figure 2 demonstrates that red urchins are generally larger than purple urchins, but that the spread of sizes within the red urchin population is larger with a difference in mean of 2 cm (41% difference). That is also indicated by the tighter distribution of purple urchins in Figure 1 that peaks further to the left of the red urchin distribution. 
+Figure 1 indicates that there is a fairly normal distribution in size of both species; however, the breaks in the distributions indicate that there may be more complexity at play. Figure 2 demonstrates that red urchins are generally larger than purple urchins, but that the spread of sizes within the red urchin population is larger with a difference in mean of 2 cm (41% difference). That is also indicated by the tighter distribution of purple urchins in Figure 1 that peaks further to the left of the red urchin distri. 
 
 
 # Section 2. Purple urchin counts by site and year
