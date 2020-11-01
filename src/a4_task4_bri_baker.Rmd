@@ -6,6 +6,104 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+library(tidyverse)
+library(here)
+library(janitor)
+library(kableExtra)
+library(lubridate)
 ```
 
+
+# Set up and visualize
+
+## Read in and subset urchins data
+
+I will be looking specifically at purple urchins in  Naples Reef in January 2020, so I will need to read in the urchins dataset and subset it accordingly. Additionally, I will clean attribute names and add date columns to make comparison easier.
+
+```{r}
+urchins <- read_csv(here("data", "urchins.csv")) %>% # read in data
+  clean_names() %>% # lower snake case column names
+  rename(size_cm = size)  # rename size colname to make more descriptive
+  
+naples_purple_10 <- urchins %>% # start with urchins
+  mutate(date = mdy(date), # format date and make "date" class
+         month = month(date), # isolate month from date in new column
+         year = year(date), # isolate year from date in new column
+         site_full = case_when( # translate site abbriviations to full names in new column
+           site == "NAPL" ~ "Naples Reef", 
+           site == "AQUE" ~ "Arroyo Quemado Reef",
+           site == "CARP" ~ "Carpinteria Reef", 
+           site == "MOHK" ~ "Mohawk Reef", 
+           site == "IVEE" ~ "Isla Vista Reef"),
+         treatment = case_when(
+           treatment == "ANNUAL" ~ "Annual",
+           treatment == "CONTROL" ~ "Control"
+         )) %>%  
+  filter(common_name == "Purple Urchin", # subset purple urchins
+          site == "NAPL", # from Naples Reef
+          year == 2010 , # in 2020
+         month == 1)# %>% #in January
+  
+```
+
+
+# Visualize
+
+I will utilize histograms and QQ-plots to understand the spread of the data and to assess normality.
+
+```{r}
+ggplot(naples_purple_10, aes(size_cm)) + # plot urchins by size
+  geom_histogram(bins = 10) + # use a histogram
+  facet_wrap(~treatment) + # split by common name
+  labs(x = "Size (cm)", # lable x axis
+       y = "Individuals (count)", #label y axis
+       title = "Figure 1: Exploratory histogram of urchin size") # title
+```
+
+
+```{r}
+ggplot(naples_purple_10, aes(sample = size_cm)) + # plot urchins by size
+  geom_qq() + # use a histogram
+  facet_wrap(~treatment) + # split by common name
+  labs(x = "Theoretical Size (cm)", # lable x axis
+       y = "Actual Size (cm)", #label y axis
+       title = "Figure 2: Exploratory QQ-Plot of urchin size") # title
+```
+
+
+The histograms in Figure 1 indicate that the sizes measured in both treatments likely have normal distributions that are positilvely skewed. It is difficult to say for certain due to the discrete nature of the measurements (taken in 0.5 cm incriments). The positive, roughly linear trend in the QQ plots of Figure 2 helps to clarify normality, with the tails on both ends signalling the skew in these data.
+
+
+## Summary Statistics 
+
+```{r}
+summary_naples_purple_10 <- naples_purple_10 %>% # start with urchins
+  group_by(treatment) %>%  # recognize common name as category
+  summarize(mean_cm = mean(size_cm), # summarize summary stats by common name
+            median_cm = median(size_cm), 
+            sd_cm = sd(size_cm), 
+            count = n())
+
+kable(summary_naples_purple_10, "html" , caption = "Table 1: Descriptive statistics") %>% #table
+  kable_styling("striped") #use striped styling
+```
+
+
+# t-test
+
+```{r}
+annual_naples <- naples_purple_10 %>% 
+  filter(treatment == "Annual") %>% 
+  pull(size_cm)
+
+control_naples <- naples_purple_10 %>% 
+  filter(treatment == "Control") %>% 
+  pull(size_cm)
+
+
+t.test(x = annual_naples, y = control_naples)
+
+```
+
+The annual mean of 3.9 cm and control mean of 3.79 cm are not very different from one another. They are 0.19 cm different which translates to a 4.99% difference. However, the medians of the groups (annual = 4 cm, control = 3.5 cm) are 0.5 cm different with a 13% difference and the standard deviations (annual = 0.97 cm, control = 0.87 cm) also indicate that the spread of the control group is tighter than that of the annual group. These statistics indicate that the groups are not exactly the same. Based on the p-value (p = 0.25), the liklihood that samples at least this different as were drawn from the same population is 25%. 
