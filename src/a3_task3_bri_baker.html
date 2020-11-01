@@ -306,7 +306,7 @@ Red Urchin
 <h2>Exploratory graph of purple urchin counts over time</h2>
 <pre class="r"><code>ggplot(purple_urchins_annually, aes(year, n)) + # make a graph of purple urchins count/year
   geom_line() + # use a line graph
-  facet_wrap(vars(site_full)) + #separate by site
+  facet_wrap(~site_full) + #separate by site
   scale_x_continuous(breaks = seq(2008, 2020, 2)) + # make breaks even
   theme(axis.text.x = element_text(angle = 45)) + # angle labs
   labs(x = &quot;Year&quot;, # label and title
