@@ -308,16 +308,16 @@ Control
 </div>
 <div id="t-test" class="section level1">
 <h1>t-test</h1>
-<pre class="r"><code>annual_naples &lt;- naples_purple_10 %&gt;% 
-  filter(treatment == &quot;Annual&quot;) %&gt;% 
-  pull(size_cm)
+<pre class="r"><code>annual_naples &lt;- naples_purple_10 %&gt;%  # subset naples purple
+  filter(treatment == &quot;Annual&quot;) %&gt;% # by &quot;Annual&quot;
+  pull(size_cm) # make a vector
 
-control_naples &lt;- naples_purple_10 %&gt;% 
-  filter(treatment == &quot;Control&quot;) %&gt;% 
-  pull(size_cm)
+control_naples &lt;- naples_purple_10 %&gt;% #subset naples purple
+  filter(treatment == &quot;Control&quot;) %&gt;% # by &quot;Control&quot;
+  pull(size_cm) # make a vector
 
 
-t.test(x = annual_naples, y = control_naples)</code></pre>
+t.test(x = annual_naples, y = control_naples) # run two sample t-test</code></pre>
 <pre><code>## 
 ##  Welch Two Sample t-test
 ## 
@@ -329,6 +329,9 @@ t.test(x = annual_naples, y = control_naples)</code></pre>
 ## sample estimates:
 ## mean of x mean of y 
 ##  3.916667  3.725806</code></pre>
+</div>
+<div id="explanation" class="section level1">
+<h1>Explanation</h1>
 <p>The annual mean of 3.9 cm and control mean of 3.79 cm are not very different from one another. They are 0.19 cm different which translates to a 4.99% difference. However, the medians of the groups (annual = 4 cm, control = 3.5 cm) are 0.5 cm different with a 13% difference and the standard deviations (annual = 0.97 cm, control = 0.87 cm) also indicate that the spread of the control group is tighter than that of the annual group. These statistics indicate that the groups are not exactly the same. Based on the p-value (p = 0.25), the liklihood that samples at least this different as were drawn from the same population is 25%.</p>
 </div>
 

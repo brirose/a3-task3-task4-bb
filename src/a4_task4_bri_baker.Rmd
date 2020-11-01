@@ -93,17 +93,20 @@ kable(summary_naples_purple_10, "html" , caption = "Table 1: Descriptive statist
 # t-test
 
 ```{r}
-annual_naples <- naples_purple_10 %>% 
-  filter(treatment == "Annual") %>% 
-  pull(size_cm)
+annual_naples <- naples_purple_10 %>%  # subset naples purple
+  filter(treatment == "Annual") %>% # by "Annual"
+  pull(size_cm) # make a vector
 
-control_naples <- naples_purple_10 %>% 
-  filter(treatment == "Control") %>% 
-  pull(size_cm)
+control_naples <- naples_purple_10 %>% #subset naples purple
+  filter(treatment == "Control") %>% # by "Control"
+  pull(size_cm) # make a vector
 
 
-t.test(x = annual_naples, y = control_naples)
+t.test(x = annual_naples, y = control_naples) # run two sample t-test
 
 ```
+
+
+# Explanation
 
 The annual mean of 3.9 cm and control mean of 3.79 cm are not very different from one another. They are 0.19 cm different which translates to a 4.99% difference. However, the medians of the groups (annual = 4 cm, control = 3.5 cm) are 0.5 cm different with a 13% difference and the standard deviations (annual = 0.97 cm, control = 0.87 cm) also indicate that the spread of the control group is tighter than that of the annual group. These statistics indicate that the groups are not exactly the same. Based on the p-value (p = 0.25), the liklihood that samples at least this different as were drawn from the same population is 25%. 
